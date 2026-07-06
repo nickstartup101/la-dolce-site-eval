@@ -1,6 +1,10 @@
 {
-  "name": "la-dolce-site-evaluation",
+  "name": "la-dolce-site-eval",
   "version": "1.0.0",
-  "private": true,
-  "description": "La Dolce AI Site Evaluation Dashboard with a secure Gemini API proxy"
+  "scripts": {
+    "start": "node analyze.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
+  }
 }
