@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Dolce | AI Site Evaluation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#081428;
+    --navy-900:#0B1E3D;
+    --navy-800:#122A52;
+    --navy-700:#1A3A6E;
+    --accent:#2455CE;
+    --accent-light:#5C87F0;
+    --gold:#C6A15B;
+    --gold-soft:#EFE2C6;
+    --bg:#EFF2F8;
+    --paper:#FFFFFF;
+    --ink:#0B1E3D;
+    --ink-soft:#5B6B85;
+    --line: rgba(11,30,61,0.08);
+    --glass: rgba(255,255,255,0.66);
+    --glass-strong: rgba(255,255,255,0.86);
+    --success:#17A45B;
+    --success-soft:#E4F7EC;
+    --warning:#D9860A;
+    --warning-soft:#FCF0DC;
+    --danger:#DC3545;
+    --danger-soft:#FBE4E6;
+    --shadow-sm: 0 2px 10px rgba(11,30,61,0.06);
+    --shadow-md: 0 12px 32px rgba(11,30,61,0.10);
+    --shadow-lg: 0 24px 60px rgba(11,30,61,0.16);
+    --r-lg: 22px;
+    --r-md: 16px;
+    --r-sm: 12px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Noto Sans Lao','Noto Sans',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 8% 8%, rgba(198,161,91,0.10), transparent 40%),
+      radial-gradient(circle at 95% 15%, rgba(36,85,206,0.10), transparent 38%),
+      repeating-linear-gradient(115deg, rgba(11,30,61,0.025) 0px, rgba(11,30,61,0.025) 1px, transparent 1px, transparent 68px),
+      var(--bg);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  ::selection{background:var(--accent); color:#fff;}
+
+  /* ---------- Layout ---------- */
+  .app{display:grid; grid-template-columns:264px 1fr; min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background:linear-gradient(185deg, var(--navy-900) 0%, var(--navy-950) 100%);
+    color:#EAF0FF;
+    padding:28px 20px;
+    display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh;
+  }
+  .brand{display:flex; align-items:center; gap:12px; padding:6px 8px 26px 8px; border-bottom:1px solid rgba(255,255,255,0.09); margin-bottom:22px;}
+  .brand .mark{
+    width:44px; height:44px; border-radius:12px;
+    background:linear-gradient(145deg, var(--gold), #9c7c3c);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Noto Sans', serif; font-weight:800; font-size:18px; color:var(--navy-950);
+    box-shadow:0 6px 16px rgba(198,161,91,0.35);
+    flex-shrink:0;
+  }
+  .brand .name{font-weight:700; font-size:16.5px; letter-spacing:0.3px; line-height:1.15;}
+  .brand .tag{font-size:10.5px; letter-spacing:1.6px; color:var(--gold-soft); text-transform:uppercase; margin-top:2px;}
+
+  .nav{display:flex; flex-direction:column; gap:4px; flex:1;}
+  .nav a{
+    display:flex; align-items:center; gap:12px;
+    padding:11px 14px; border-radius:12px;
+    font-size:14.5px; color:rgba(234,240,255,0.72);
+    transition:background .18s ease, color .18s ease;
+  }
+  .nav a svg{width:18px; height:18px; flex-shrink:0; opacity:0.85;}
+  .nav a:hover{background:rgba(255,255,255,0.06); color:#fff;}
+  .nav a.active{background:linear-gradient(90deg, rgba(36,85,206,0.55), rgba(36,85,206,0.18)); color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);}
+
+  .upgrade{
+    margin-top:16px; padding:18px; border-radius:var(--r-md);
+    background:linear-gradient(160deg, var(--navy-700), var(--navy-800));
+    border:1px solid rgba(198,161,91,0.35);
+    position:relative; overflow:hidden;
+  }
+  .upgrade::after{content:""; position:absolute; width:120px; height:120px; background:radial-gradient(circle, rgba(198,161,91,0.35), transparent 70%); top:-40px; right:-30px;}
+  .upgrade .crown{font-size:13px; color:var(--gold); font-weight:700; display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+  .upgrade h4{font-size:14.5px; font-weight:700; margin-bottom:6px;}
+  .upgrade p{font-size:12px; color:rgba(234,240,255,0.7); line-height:1.5; margin-bottom:14px;}
+  .upgrade button{
+    width:100%; padding:10px; border:none; border-radius:10px;
+    background:var(--gold); color:var(--navy-950); font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+
+  /* ---------- Main ---------- */
+  .main{padding:26px 34px 60px 34px;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadeInView .25s ease;}
+  @keyframes fadeInView{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .topbar{display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:16px;}
+  .topbar h1{font-size:26px; font-weight:800; color:var(--navy-900); display:flex; align-items:center; gap:10px;}
+  .topbar .sub{font-size:13.5px; color:var(--ink-soft); margin-top:5px;}
+  .top-actions{display:flex; align-items:center; gap:16px;}
+  .bell{
+    width:42px; height:42px; border-radius:12px; background:var(--paper); box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; justify-content:center; position:relative; border:1px solid var(--line);
+  }
+  .bell .dot{position:absolute; top:8px; right:8px; width:16px; height:16px; border-radius:50%; background:var(--danger); color:#fff; font-size:9.5px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #fff;}
+  .profile{display:flex; align-items:center; gap:10px; background:var(--paper); padding:6px 14px 6px 6px; border-radius:14px; box-shadow:var(--shadow-sm); border:1px solid var(--line);}
+  .profile .avatar{width:34px; height:34px; border-radius:50%; background:linear-gradient(145deg,var(--accent-light),var(--accent)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13px;}
+  .profile .who{line-height:1.2;}
+  .profile .who .n{font-size:13px; font-weight:700; color:var(--navy-900);}
+  .profile .who .r{font-size:11px; color:var(--ink-soft);}
+
+  /* ---------- Card base ---------- */
+  .card{
+    background:var(--glass-strong);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.6);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-md);
+    padding:22px;
+  }
+  .card-head{display:flex; align-items:center; justify-content:between; gap:10px; margin-bottom:16px;}
+  .card-title{display:flex; align-items:center; gap:9px; font-size:15px; font-weight:700; color:var(--navy-900);}
+  .card-title .ic{width:30px; height:30px; border-radius:9px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .card-title .ic svg{width:16px; height:16px;}
+
+  /* ---------- Grid ---------- */
+  .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:20px;}
+  .g-loc{grid-column:span 5;}
+  .g-score{grid-column:span 3;}
+  .g-summary{grid-column:span 4;}
+  .g-map{grid-column:span 5;}
+  .g-kpi{grid-column:span 4;}
+  .g-nearby{grid-column:span 3;}
+  .g-photos{grid-column:span 4;}
+  .g-notes{grid-column:span 4;}
+  .g-export{grid-column:span 4;}
+  .g-full{grid-column:span 12;}
+
+  @media (max-width:1200px){
+    .g-loc,.g-score,.g-summary,.g-map,.g-kpi,.g-nearby,.g-photos,.g-notes,.g-export,.g-full{grid-column:span 12;}
+  }
+
+  /* ---------- Location input ---------- */
+  .input-row{display:flex; gap:10px;}
+  .input-wrap{flex:1; position:relative;}
+  .input-wrap input{
+    width:100%; padding:13px 44px 13px 16px; border-radius:13px; border:1.5px solid var(--line);
+    background:#fff; font-size:13.5px; color:var(--navy-900); font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .input-wrap input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 4px rgba(36,85,206,0.12);}
+  .input-wrap .link-ic{position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--ink-soft);}
+  .btn{
+    border:none; border-radius:13px; padding:13px 20px; font-weight:700; font-size:13.5px;
+    display:flex; align-items:center; gap:8px; white-space:nowrap; transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:linear-gradient(135deg, var(--accent), var(--navy-800)); color:#fff; box-shadow:0 10px 24px rgba(36,85,206,0.32);}
+  .btn-primary:disabled{opacity:0.65; cursor:progress;}
+  .btn-ghost{background:#fff; color:var(--navy-900); border:1.5px solid var(--line);}
+  .hint{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); margin-top:12px;}
+  .status-row{display:flex; align-items:center; gap:8px; margin-top:14px; font-size:12.5px; color:var(--ink-soft);}
+  .status-dot{width:8px; height:8px; border-radius:50%; background:var(--ink-soft);}
+  .status-dot.live{background:var(--success); box-shadow:0 0 0 4px var(--success-soft); animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(23,164,91,0.4);}70%{box-shadow:0 0 0 8px rgba(23,164,91,0);}100%{box-shadow:0 0 0 0 rgba(23,164,91,0);}}
+
+  /* ---------- Score card ---------- */
+  .g-score .card{display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center;}
+  .score-label{font-size:13px; color:var(--ink-soft); font-weight:600; margin-bottom:6px;}
+  .gauge-wrap{position:relative; width:150px; height:150px; margin:6px 0 10px 0;}
+  .gauge-wrap svg{transform:rotate(-90deg);}
+  .gauge-num{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .gauge-num .big{font-size:34px; font-weight:800; color:var(--navy-900); line-height:1;}
+  .gauge-num .of100{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .status-pill{display:inline-flex; align-items:center; gap:6px; padding:7px 16px; border-radius:999px; background:var(--success-soft); color:var(--success); font-weight:700; font-size:13px;}
+
+  /* ---------- Summary card ---------- */
+  .summary-text{font-size:13.5px; line-height:1.85; color:var(--navy-900);}
+  .summary-text b{color:var(--accent);}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .chip{background:var(--bg); border:1px solid var(--line); font-size:11.5px; padding:6px 11px; border-radius:999px; color:var(--navy-800); font-weight:600;}
+
+  /* ---------- Map ---------- */
+  .map-box{
+    position:relative; height:300px; border-radius:16px; overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0) 40%),
+      repeating-linear-gradient(0deg, #E7ECF5 0px, #E7ECF5 1px, #DEE5F1 1px, #DEE5F1 42px),
+      repeating-linear-gradient(90deg, #E7ECF5 0px, #E7ECF5 1px, #DEE5F1 1px, #DEE5F1 42px),
+      #EDF1F9;
+    border:1px solid var(--line);
+  }
+  .map-box svg.roads{position:absolute; inset:0; width:100%; height:100%;}
+  .radius-ring{position:absolute; border-radius:50%; border:1.5px dashed rgba(36,85,206,0.45); left:50%; top:50%; transform:translate(-50%,-50%);}
+  .r1{width:120px; height:120px; background:rgba(36,85,206,0.05);}
+  .r2{width:210px; height:210px; background:rgba(36,85,206,0.035);}
+  .r3{width:300px; height:300px; background:rgba(36,85,206,0.02);}
+  .pin{position:absolute; left:50%; top:50%; transform:translate(-50%,-100%); z-index:5;}
+  .pin svg{filter:drop-shadow(0 6px 10px rgba(11,30,61,0.35));}
+  .poi{position:absolute; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 4px 10px rgba(11,30,61,0.18); border:2px solid #fff;}
+  .poi.cafe{background:#FCEFD9;}
+  .poi.competitor{background:#FBE4E6;}
+  .poi.transit{background:#E4F7EC;}
+  .poi.parking{background:#E6EEFC;}
+  .map-legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--ink-soft);}
+  .map-legend span{display:flex; align-items:center; gap:6px;}
+  .legend-dot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .map-meta{display:flex; align-items:center; justify-content:space-between; margin-top:14px; flex-wrap:wrap; gap:10px;}
+  .coord-tag{font-size:12px; color:var(--navy-800); background:var(--bg); padding:7px 12px; border-radius:10px; font-weight:600;}
+
+  /* ---------- KPI ---------- */
+  .kpi-row{margin-bottom:15px;}
+  .kpi-row:last-child{margin-bottom:0;}
+  .kpi-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .kpi-name{font-size:13px; font-weight:600; color:var(--navy-900); display:flex; align-items:center; gap:7px;}
+  .kpi-weight{font-size:10.5px; color:var(--ink-soft); font-weight:500;}
+  .kpi-score{font-size:13px; font-weight:700; color:var(--navy-900);}
+  .bar-track{height:8px; border-radius:99px; background:var(--bg); overflow:hidden;}
+  .bar-fill{height:100%; border-radius:99px; width:0%; transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+  .fill-good{background:linear-gradient(90deg, #1FBE71, #17A45B);}
+  .fill-mid{background:linear-gradient(90deg, var(--accent-light), var(--accent));}
+  .fill-low{background:linear-gradient(90deg, #F0A93A, var(--warning));}
+  .kpi-total{margin-top:16px; padding-top:16px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  .kpi-total .lbl{font-size:13.5px; font-weight:700; color:var(--navy-900);}
+  .kpi-total .val{font-size:20px; font-weight:800; color:var(--accent);}
+
+  /* ---------- Nearby stats ---------- */
+  .stat-row{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-ic{width:34px; height:34px; border-radius:10px; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--accent);}
+  .stat-ic svg{width:16px; height:16px;}
+  .stat-txt{flex:1; font-size:12.5px; color:var(--navy-800); line-height:1.35;}
+  .stat-val{font-size:14px; font-weight:800; color:var(--navy-900); white-space:nowrap;}
+
+  /* ---------- Recommendations ---------- */
+  .rec-list{list-style:none; display:flex; flex-direction:column; gap:11px;}
+  .rec-list li{display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--navy-800); line-height:1.5;}
+  .rec-list li .chk{width:19px; height:19px; border-radius:6px; background:var(--success-soft); color:var(--success); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;}
+  .rec-list li .chk svg{width:11px; height:11px;}
+
+  /* ---------- Photos ---------- */
+  .photo-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .photo-tile{aspect-ratio:1/1; border-radius:13px; background-size:cover; background-position:center; position:relative; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow-sm);}
+  .photo-tile .more{position:absolute; inset:0; background:rgba(11,30,61,0.62); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .upload-tile{aspect-ratio:1/1; border-radius:13px; border:1.5px dashed var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--ink-soft); font-size:11px; cursor:pointer; background:#fff;}
+  .upload-tile:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* ---------- Notes ---------- */
+  .note-list{list-style:none; display:flex; flex-direction:column; gap:10px;}
+  .note-list li{font-size:12.8px; color:var(--navy-800); padding-left:16px; position:relative; line-height:1.55;}
+  .note-list li::before{content:"—"; position:absolute; left:0; color:var(--accent); font-weight:700;}
+
+  /* ---------- Export ---------- */
+  .export-list{display:flex; flex-direction:column; gap:10px;}
+  .export-list .btn{justify-content:center; width:100%;}
+  .export-list .btn-ghost svg{color:var(--accent);}
+
+  /* ---------- Franchise Calculator ---------- */
+  .calc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media (max-width:800px){ .calc-grid{grid-template-columns:1fr;} }
+  .calc-field{margin-bottom:16px;}
+  .calc-field:last-child{margin-bottom:0;}
+  .calc-label{display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:600; color:var(--navy-900); margin-bottom:7px;}
+  .calc-label .desc{font-size:11px; color:var(--ink-soft); font-weight:500; margin-top:2px;}
+  .calc-input-wrap{position:relative;}
+  .calc-input-wrap input{
+    width:100%; padding:12px 70px 12px 14px; border-radius:12px; border:1.5px solid var(--line);
+    background:#fff; font-size:13.5px; color:var(--navy-900); font-family:inherit; font-weight:600;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .calc-input-wrap input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 4px rgba(36,85,206,0.12);}
+  .calc-input-wrap .unit{position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:11.5px; color:var(--ink-soft); font-weight:600;}
+  .calc-breakdown{background:var(--bg); border-radius:16px; padding:18px; height:100%;}
+  .calc-line{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .calc-line:last-of-type{border-bottom:none;}
+  .calc-line .k{color:var(--navy-800); display:flex; align-items:center; gap:7px;}
+  .calc-line .v{font-weight:700; color:var(--navy-900);}
+  .calc-total-box{margin-top:14px; padding:16px; border-radius:14px; background:linear-gradient(135deg, var(--navy-900), var(--navy-800)); color:#fff; display:flex; align-items:center; justify-content:space-between;}
+  .calc-total-box .t-lbl{font-size:12.5px; color:rgba(255,255,255,0.7);}
+  .calc-total-box .t-val{font-size:22px; font-weight:800; color:var(--gold-soft); margin-top:3px;}
+  .calc-note{font-size:11.5px; color:var(--ink-soft); margin-top:12px; line-height:1.6;}
+
+  /* ---------- Workflow steps ---------- */
+  .flow-list{display:flex; flex-direction:column;}
+  .flow-item{display:flex; gap:16px; position:relative; padding-bottom:22px;}
+  .flow-item:last-child{padding-bottom:0;}
+  .flow-item:not(:last-child)::before{content:""; position:absolute; left:17px; top:38px; bottom:0; width:2px; background:var(--line);}
+  .flow-num{width:36px; height:36px; border-radius:50%; background:var(--accent); color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 6px 14px rgba(36,85,206,0.28); z-index:2;}
+  .flow-body{flex:1; padding-top:4px;}
+  .flow-title{font-size:13.5px; font-weight:700; color:var(--navy-900); display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .flow-time{font-size:10.5px; font-weight:700; color:var(--accent); background:var(--bg); padding:3px 10px; border-radius:999px;}
+  .flow-desc{font-size:12.3px; color:var(--ink-soft); margin-top:5px; line-height:1.6;}
+
+  /* ---------- Toast ---------- */
+  #toast{
+    position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--navy-900); color:#fff; padding:13px 22px; border-radius:12px; font-size:13px;
+    box-shadow:var(--shadow-lg); opacity:0; pointer-events:none; transition:all .3s ease; z-index:100;
+    display:flex; align-items:center; gap:10px;
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  footer{text-align:center; font-size:11.5px; color:var(--ink-soft); padding:26px 0 4px 0; display:flex; justify-content:space-between; padding:26px 4px 0 4px;}
+
+  @media (max-width:900px){
+    .app{grid-template-columns:1fr;}
+    .sidebar{position:relative; height:auto; flex-direction:row; align-items:center; overflow-x:auto;}
+    .nav{flex-direction:row; flex:none;}
+    .main{padding:20px;}
+  }
+
+  /* ---------- Print: workflow only ---------- */
+  @media print{
+    body.print-workflow-only .sidebar,
+    body.print-workflow-only .topbar,
+    body.print-workflow-only footer{ display:none !important; }
+    body.print-workflow-only .grid > section:not(#workflowSection){ display:none !important; }
+    body.print-workflow-only .grid{ grid-template-columns:1fr !important; gap:0 !important; }
+    body.print-workflow-only .main{ padding:0 !important; }
+    body.print-workflow-only #workflowSection{ box-shadow:none !important; border:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div>
+        <div class="name">La Dolce</div>
+        <div class="tag">AI Site Evaluation</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a class="active" href="#" data-view="dashboard" onclick="return switchView('dashboard', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg> ໜ້າຫຼັກ</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> ການປະເມີນທັງໝົດ</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/></svg> ສະຖານທີ່ທັງໝົດ</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg> ລາຍງານ</a>
+      <a href="#" data-view="franchise" onclick="return switchView('franchise', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg> ຄ່າໃຊ້ຈ່າຍ ແລະ ຂັ້ນຕອນປະຕິບັດງານ</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg> ການແຈ້ງເຕືອນ</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.36.14.68.36.95.63"/></svg> ຕັ້ງຄ່າ</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+  <div id="view-dashboard" class="view active">
+    <div class="topbar">
+      <div>
+        <h1>ປະເມີນທີ່ຕັ້ງ (AI Site Evaluation)</h1>
+        <div class="sub">ວິເຄາະ ແລະ ປະເມີນທຳເລເປີດຮ້ານໃໝ່ດ້ວຍ AI ແບບອັດຕະໂນມັດ</div>
+      </div>
+      <div class="top-actions">
+        <div class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B1E3D" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="dot">3</span></div>
+        <div class="profile">
+          <div class="avatar">LA</div>
+          <div class="who"><div class="n">La Dolce Admin</div><div class="r">Franchise Consultant</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- LOCATION INPUT -->
+      <section class="g-loc card">
+        <div class="card-title" style="margin-bottom:16px;"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span> ປ້ອນລິ້ງສະຖານທີ່</div>
+        <div class="input-row">
+          <div class="input-wrap">
+            <input id="mapUrl" type="text" placeholder="https://maps.google.com/?q=17.975687,102.633077" value="https://maps.google.com/?q=17.975687,102.633077">
+            <span class="link-ic">🔗</span>
+          </div>
+          <button class="btn btn-ghost" onclick="locateFromInput()">ຄົ້ນຫາ</button>
+        </div>
+        <button id="analyzeBtn" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:12px;" onclick="runAnalysis()">✨ ວິເຄາະດ້ວຍ AI</button>
+        <div class="hint">ⓘ ວາງລິ້ງ Google Maps ທີ່ປັກໝຸດທຳເລ — ລະບົບຈະດຶງເສັ້ນຂະໜານ ແລະ ເສັ້ນແວງໂດຍອັດຕະໂນມັດ</div>
+        <div class="status-row"><span class="status-dot live" id="statusDot"></span> <span id="statusText">ພ້ອມສຳລັບການວິເຄາະ</span></div>
+      </section>
+
+      <!-- SCORE -->
+      <section class="g-score card">
+        <div class="score-label">ຄະແນນລວມ</div>
+        <div class="gauge-wrap">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="64" stroke="#EEF1F8" stroke-width="14" fill="none"/>
+            <circle id="gaugeCircle" cx="75" cy="75" r="64" stroke="#2455CE" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402"/>
+          </svg>
+          <div class="gauge-num"><span class="big" id="scoreBig">0</span><span class="of100">/ 100</span></div>
+        </div>
+        <div class="status-pill" id="statusPill">⏳ ລໍຖ້າການວິເຄາະ</div>
+      </section>
+
+      <!-- AI SUMMARY -->
+      <section class="g-summary card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/></svg></span> AI ສະຫຼຸບຜົນ</div>
+        <p class="summary-text" id="summaryText">ທຳເລນີ້ເໝາະສົມສຳລັບການເປີດຮ້ານກາເຟ ເນື່ອງຈາກມີກຸ່ມລູກຄ້າຫຼາກຫຼາຍ ຕິດຖະໜົນໃຫຍ່ ເຂົ້າ-ອອກສະດວກ ແລະ ມີການຈະລາຈອນຫນາແໜ້ນໃນຊົ່ວໂມງເລັ່ງດ່ວນ. ຄວນລະວັງການແຂ່ງຂັນຈາກຮ້ານກາເຟໃກ້ຄຽງ 2 ຮ້ານໃນລັດສະໝີ 600 ແມັດ.</p>
+        <div class="chip-row">
+          <span class="chip">📍 ຕົວເມືອງ</span>
+          <span class="chip">☕ ເໝາະສຳລັບກາເຟ</span>
+          <span class="chip">🚗 ເຂົ້າ-ອອກງ່າຍ</span>
+        </div>
+      </section>
+
+      <!-- MAP -->
+      <section class="g-map card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/></svg></span> ຕຳແໜ່ງສະຖານທີ່</div>
+        <div class="map-box" id="mapBox">
+          <div id="googleMap" style="width:100%; height:100%;"></div>
+        </div>
+        <div class="map-legend">
+          <span><i class="legend-dot" style="background:#2455CE;"></i>ຈຸດປັກໝຸດ (ລາກເພື່ອຍ້າຍ)</span>
+          <span><i class="legend-dot" style="background:#F0C97A;"></i>ຮ້ານກາເຟ/ຄູ່ແຂ່ງໃກ້ຄຽງ</span>
+          <span id="cafeCountLegend"><i class="legend-dot" style="background:#8FD6AC;"></i>ກຳລັງຄົ້ນຫາ...</span>
+        </div>
+        <div class="map-meta">
+          <div class="coord-tag" id="coordTag">📍 17.975687, 102.633077</div>
+          <button class="btn btn-ghost" style="padding:9px 16px; font-size:12.5px;" onclick="openInGoogleMaps()">🧭 ເບິ່ງໃນ Google Maps</button>
+        </div>
+      </section>
+
+
+      <!-- KPI -->
+      <section class="g-kpi card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></span> ຄະແນນຕາມ KPI</div>
+
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">👥 ກຸ່ມລູກຄ້າ (Customer)<span class="kpi-weight">ນ້ຳໜັກ 20%</span></span><span class="kpi-score" id="kpiScore-customer">18/20</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-customer" data-max="20" data-w="90"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">🚦 ການເຂົ້າເຖິງ (Access)<span class="kpi-weight">ນ້ຳໜັກ 15%</span></span><span class="kpi-score" id="kpiScore-access">13/15</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-access" data-max="15" data-w="87"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">🏪 ຄູ່ແຂ່ງ (Competition)<span class="kpi-weight">ນ້ຳໜັກ 10%</span></span><span class="kpi-score" id="kpiScore-competition">7/10</span></div>
+          <div class="bar-track"><div class="bar-fill fill-mid" id="kpiBar-competition" data-max="10" data-w="70"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">🅿️ ບ່ອນຈອດລົດ (Parking)<span class="kpi-weight">ນ້ຳໜັກ 10%</span></span><span class="kpi-score" id="kpiScore-parking">8/10</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-parking" data-max="10" data-w="80"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">🪑 ພື້ນທີ່ ແລະ ສິ່ງອຳນວຍ<span class="kpi-weight">ນ້ຳໜັກ 10%</span></span><span class="kpi-score" id="kpiScore-facilities">8/10</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-facilities" data-max="10" data-w="80"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">💰 ຄ່າເຊົ່າ (Rental Cost)<span class="kpi-weight">ນ້ຳໜັກ 10%</span></span><span class="kpi-score" id="kpiScore-rental">9/10</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-rental" data-max="10" data-w="90"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">📈 ການເຕີບໂຕ (Growth)<span class="kpi-weight">ນ້ຳໜັກ 15%</span></span><span class="kpi-score" id="kpiScore-growth">15/15</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-growth" data-max="15" data-w="100"></div></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi-top"><span class="kpi-name">🛡️ ຄວາມປອດໄພ (Safety)<span class="kpi-weight">ນ້ຳໜັກ 10%</span></span><span class="kpi-score" id="kpiScore-safety">9/10</span></div>
+          <div class="bar-track"><div class="bar-fill fill-good" id="kpiBar-safety" data-max="10" data-w="90"></div></div>
+        </div>
+
+        <div class="kpi-total"><span class="lbl">ຄະແນນລວມ</span><span class="val" id="kpiTotal">86/100</span></div>
+      </section>
+
+      <!-- NEARBY STATS -->
+      <section class="g-nearby card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2"/><circle cx="18" cy="7" r="3"/></svg></span> ຂໍ້ມູນພື້ນຖານ</div>
+        <div class="stat-row">
+          <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2"/></svg></div>
+          <div class="stat-txt">ປະຊາກອນໃນລັດສະໝີ 500 ມ.</div><div class="stat-val">6,238 ຄົນ</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/></svg></div>
+          <div class="stat-txt">ພະນັກງານບໍລິສັດໃນລັດສະໝີ 500 ມ.</div><div class="stat-val">2,153 ຄົນ</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></div>
+          <div class="stat-txt">ປະລິມານການສັນຈອນ (ລົດ/ນຶ່ງ)</div><div class="stat-val">12,450 ຄັນ</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M6 21V10l6-4 6 4v11"/></svg></div>
+          <div class="stat-txt">ຈຳນວນຮ້ານກາເຟໃນລັດສະໝີ 500 ມ. <span style="opacity:.6;">(Google Places)</span></div><div class="stat-val" id="cafeCountStat">— ຮ້ານ</div>
+        </div>
+      </section>
+
+      <!-- AI RECOMMENDATIONS -->
+      <section class="g-summary card" style="grid-column:span 4;">
+        <div class="card-title"><span class="ic" style="background:var(--gold);"><svg viewBox="0 0 24 24" fill="none" stroke="#0B1E3D" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 00-4 12.7c.5.4.8 1 .8 1.7v.6h6.4v-.6c0-.7.3-1.3.8-1.7A7 7 0 0012 2z"/></svg></span> AI ຂໍ້ແນະນຳ</div>
+        <ul class="rec-list" id="recList">
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ເໝາະສຳລັບຮູບແບບຮ້ານ Café ຂະໜາດ M</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ຄາດການຍອດຂາຍ/ວັນ: 25,000 – 35,000 ກີບ</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ເວລາລູກຄ້າໜາແໜ້ນ: 07.00–09.00 ແລະ 16.00–18.00</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ແນະນຳເພີ່ມຊ່ອງທາງ Grab & Go ແລະ Delivery</li>
+          <li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ໄລຍະຄືນທຶນໂດຍປະມານ 14–18 ເດືອນ</li>
+        </ul>
+      </section>
+
+      <!-- PHOTOS -->
+      <section class="g-photos card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span> ຮູບພື້ນທີ່</div>
+        <div class="photo-grid">
+          <div class="photo-tile" style="background-image:url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300&q=60')"></div>
+          <div class="photo-tile" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=300&q=60')"></div>
+          <div class="photo-tile" style="background-image:url('https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=300&q=60')"></div>
+          <div class="upload-tile" onclick="showToast('ເປີດໜ້າຕ່າງອັບໂຫຼດຮູບ')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            ອັບໂຫຼດເພີ່ມ
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTES -->
+      <section class="g-notes card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span> ບັນທຶກຂໍ້ສັງເກດ</div>
+        <ul class="note-list" id="noteList">
+          <li>ຕິດຖະໜົນໃຫຍ່ ເໝາະສຳລັບແບຣນທີ່ຕ້ອງການໜ້າຮ້ານໂດດເດັ່ນ</li>
+          <li>ມີບ່ອນຈອດລົດພຽງພໍສຳລັບຊົ່ວໂມງເລັ່ງດ່ວນ</li>
+          <li>ມີຮ້ານຄູ່ແຂ່ງ 2 ຮ້ານໃນລັດສະໝີ 600 ແມັດ (Coffee World, Amazon)</li>
+          <li>ພື້ນທີ່ມີການພັດທະນາໂຄງການອະສັງຫາໃໝ່ໃນອະນາຄົດ</li>
+        </ul>
+      </section>
+
+      <!-- EXPORT -->
+      <section class="g-export card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></span> ລາຍງານ</div>
+        <div class="export-list">
+          <button class="btn btn-primary" onclick="window.print()">📄 ດາວໂຫຼດ PDF</button>
+          <button class="btn btn-ghost" onclick="showToast('ກຳລັງກະກຽມໄຟລ໌ Excel...')">📊 ດາວໂຫຼດ Excel</button>
+          <button class="btn btn-ghost" onclick="showToast('ສ້າງລິ້ງແບ່ງປັນແລ້ວ ✔')">🔗 ແບ່ງປັນລາຍງານ</button>
+          <button class="btn btn-ghost" onclick="window.print()">🖨️ ພິມ</button>
+          <button class="btn btn-ghost" onclick="saveEvaluation()">💾 ບັນທຶກການປະເມີນ</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <!-- /view-dashboard -->
+
+  <div id="view-franchise" class="view">
+    <div class="topbar">
+      <div>
+        <h1>ຄ່າໃຊ້ຈ່າຍ ແລະ ຂັ້ນຕອນປະຕິບັດງານ</h1>
+        <div class="sub">ຄິດໄລ່ຄ່າໃຊ້ຈ່າຍມາດຕະຖານແຟຣນຊາຍ ແລະ ຕິດຕາມຂັ້ນຕອນຫຼັງເຊັນສັນຍາ</div>
+      </div>
+      <div class="top-actions">
+        <div class="profile">
+          <div class="avatar">LA</div>
+          <div class="who"><div class="n">La Dolce Admin</div><div class="r">Franchise Consultant</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- FRANCHISE COST CALCULATOR -->
+      <section class="g-full card">
+        <div class="card-title"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg></span> ເຄື່ອງມືຄິດໄລ່ຄ່າໃຊ້ຈ່າຍມາດຕະຖານແຟຣນຊາຍ</div>
+        <div class="calc-grid">
+          <div>
+            <div class="calc-field">
+              <div class="calc-label">🏗️ ຄ່າອອກແບບ ແລະ ຕົບແຕ່ງກໍ່ສ້າງ
+                <div class="desc">ຂະໜາດພື້ນທີ່ຮ້ານ (ຕ.ມ.) × ຄ່າອອກແບບ/ຕົບແຕ່ງຕໍ່ ຕ.ມ.</div>
+              </div>
+              <div class="input-row">
+                <div class="calc-input-wrap"><input type="number" id="calcArea" value="80" oninput="calcTotal()"><span class="unit">ຕ.ມ.</span></div>
+                <div class="calc-input-wrap"><input type="number" id="calcAreaRate" value="3500000" oninput="calcTotal()"><span class="unit">ກີບ/ຕ.ມ.</span></div>
+              </div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label">🎨 ຄ່າແບຣນດິງ
+                <div class="desc">ໂລໂກ້, ປ້າຍຮ້ານ, ຊຸດພະນັກງານ, ອຸປະກອນຕິດຍີ່ຫໍ້</div>
+              </div>
+              <div class="calc-input-wrap"><input type="number" id="calcBranding" value="15000000" oninput="calcTotal()"><span class="unit">ກີບ</span></div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label">☕ ຄ່າສູດເຄື່ອງດື່ມ ແລະ ອາຫານ
+                <div class="desc">ຄ່າລິຂະສິດສູດ + ອຸປະກອນເລີ່ມຕົ້ນວັດຖຸດິບ</div>
+              </div>
+              <div class="calc-input-wrap"><input type="number" id="calcRecipe" value="12000000" oninput="calcTotal()"><span class="unit">ກີບ</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="calc-field">
+              <div class="calc-label">🖥️ ລະບົບການບໍລິຫານ (POS/KDS)
+                <div class="desc">ຄ່າລິຂະສິດລະບົບ POS, ອຸປະກອນ, ການຕິດຕັ້ງ</div>
+              </div>
+              <div class="calc-input-wrap"><input type="number" id="calcSystem" value="9000000" oninput="calcTotal()"><span class="unit">ກີບ</span></div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label">🎓 ຄ່າຝຶກອົບຮົມ (Training)
+                <div class="desc">ຝຶກອົບຮົມພະນັກງານ + ຄູ່ມືການບໍລິຫານຮ້ານ</div>
+              </div>
+              <div class="calc-input-wrap"><input type="number" id="calcTraining" value="6000000" oninput="calcTotal()"><span class="unit">ກີບ</span></div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label">📋 ຄ່າທຳນຽມແຟຣນຊາຍເບື້ອງຕົ້ນ
+                <div class="desc">Franchise fee ຄັ້ງດຽວ (ບໍ່ລວມ Royalty ລາຍເດືອນ)</div>
+              </div>
+              <div class="calc-input-wrap"><input type="number" id="calcFee" value="20000000" oninput="calcTotal()"><span class="unit">ກີບ</span></div>
+            </div>
+          </div>
+          <div style="grid-column:span 2;">
+            <div class="calc-breakdown">
+              <div class="calc-line"><span class="k">🏗️ ອອກແບບ/ຕົບແຕ່ງກໍ່ສ້າງ</span><span class="v" id="lineDesign">0 ກີບ</span></div>
+              <div class="calc-line"><span class="k">🎨 ແບຣນດິງ</span><span class="v" id="lineBranding">0 ກີບ</span></div>
+              <div class="calc-line"><span class="k">☕ ສູດເຄື່ອງດື່ມ/ອາຫານ</span><span class="v" id="lineRecipe">0 ກີບ</span></div>
+              <div class="calc-line"><span class="k">🖥️ ລະບົບບໍລິຫານ</span><span class="v" id="lineSystem">0 ກີບ</span></div>
+              <div class="calc-line"><span class="k">🎓 ຝຶກອົບຮົມ</span><span class="v" id="lineTraining">0 ກີບ</span></div>
+              <div class="calc-line"><span class="k">📋 ຄ່າທຳນຽມແຟຣນຊາຍ</span><span class="v" id="lineFee">0 ກີບ</span></div>
+              <div class="calc-total-box">
+                <div><div class="t-lbl">ຍອດການລົງທຶນທັງໝົດ (ປະມານ)</div><div class="t-val" id="calcGrandTotal">0 ກີບ</div></div>
+                <button class="btn btn-ghost" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.25);" onclick="saveFranchiseCost()">💾 ບັນທຶກ</button>
+              </div>
+              <div class="calc-note">ⓘ ຕົວເລກເລີ່ມຕົ້ນເປັນຄ່າມາດຕະຖານໂດຍປະມານ, ສາມາດປັບແກ້ໄດ້ຕາມຂະໜາດ ແລະ ເງື່ອນໄຂຈິງຂອງແຕ່ລະທຳເລ. ບໍ່ລວມຄ່າເຊົ່າພື້ນທີ່ ແລະ Royalty ລາຍເດືອນ.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- POST-CONTRACT WORKFLOW -->
+      <section class="g-full card" id="workflowSection">
+        <div class="card-title" style="justify-content:space-between; width:100%;">
+          <span style="display:flex; align-items:center; gap:9px;"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span> ຂັ້ນຕອນການເຮັດວຽກຫຼັງຈາກເຊັນສັນຍາ</span>
+          <button class="btn btn-primary" style="padding:9px 16px; font-size:12.5px;" onclick="exportWorkflowPDF()">📄 Export to PDF</button>
+        </div>
+        <div class="flow-list" style="margin-top:6px;">
+          <div class="flow-item">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+              <div class="flow-title">ເຊັນສັນຍາແຟຣນຊາຍ ແລະ ຊຳລະຄ່າທຳນຽມເບື້ອງຕົ້ນ <span class="flow-time">ວັນທີ 0</span></div>
+              <div class="flow-desc">ຢືນຢັນເງື່ອນໄຂສັນຍາ, ຊຳລະຄ່າ Franchise Fee ແລະ ມັດຈຳ ກ່ອນເລີ່ມຂະບວນການ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+              <div class="flow-title">ຢືນຢັນທຳເລ ແລະ ສຳຫຼວດພື້ນທີ່ຈິງ <span class="flow-time">ອາທິດທີ 1</span></div>
+              <div class="flow-desc">ວັດແທກພື້ນທີ່, ກວດສອບໂຄງສ້າງ ໄຟຟ້າ-ນ້ຳປະປາ, ຢືນຢັນຄະແນນປະເມີນທຳເລກ່ອນເລີ່ມອອກແບບ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+              <div class="flow-title">ອອກແບບ ແລະ ວາງແຜນຕົບແຕ່ງຮ້ານ <span class="flow-time">ອາທິດທີ 2-3</span></div>
+              <div class="flow-desc">ອອກແບບ Layout, 3D Concept, ເລືອກວັດສະດຸ ແລະ ອະນຸມັດແບບກັບແຟຣນຊາຍຊາຍ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+              <div class="flow-title">ກໍ່ສ້າງ ຕົບແຕ່ງ ແລະ ຕິດຕັ້ງແບຣນດິງ <span class="flow-time">ອາທິດທີ 4-7</span></div>
+              <div class="flow-desc">ດຳເນີນການກໍ່ສ້າງ ຕິດຕັ້ງປ້າຍ, ໂລໂກ້, ອຸປະກອນ ແລະ ເຟີນີເຈີຕາມແບບທີ່ອະນຸມັດ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+              <div class="flow-title">ຕິດຕັ້ງລະບົບ POS/KDS ແລະ ອຸປະກອນ <span class="flow-time">ອາທິດທີ 7</span></div>
+              <div class="flow-desc">ຕິດຕັ້ງລະບົບບໍລິຫານຮ້ານ, ເຄື່ອງມືເຮັດເຄື່ອງດື່ມ, ເຊື່ອມຕໍ່ອິນເຕີເນັດ ແລະ ທົດສອບລະບົບ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">6</div>
+            <div class="flow-body">
+              <div class="flow-title">ຝຶກອົບຮົມພະນັກງານ <span class="flow-time">ອາທິດທີ 8</span></div>
+              <div class="flow-desc">ຝຶກສູດເຄື່ອງດື່ມ, ມາດຕະຖານການບໍລິການ, ການໃຊ້ລະບົບ POS ແລະ ຄູ່ມືປະຕິບັດງານ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">7</div>
+            <div class="flow-body">
+              <div class="flow-title">ກຽມສະຕ໊ອກ ແລະ ວັດຖຸດິບເລີ່ມຕົ້ນ <span class="flow-time">ອາທິດທີ 8</span></div>
+              <div class="flow-desc">ສັ່ງຊື້ວັດຖຸດິບ, ບັນຈຸພັນ, ອຸປະກອນສຳຫຼັບ ແລະ ກຽມສາງເກັບເຄື່ອງ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">8</div>
+            <div class="flow-body">
+              <div class="flow-title">ເປີດຮ້ານທົດລອງ (Soft Opening) <span class="flow-time">ອາທິດທີ 9</span></div>
+              <div class="flow-desc">ທົດລອງລະບົບ-ພະນັກງານກັບລູກຄ້າຈິງ, ເກັບຄຳຄິດເຫັນ ແລະ ປັບປຸງກ່ອນເປີດທາງການ.</div>
+            </div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-num">9</div>
+            <div class="flow-body">
+              <div class="flow-title">ເປີດຮ້ານທາງການ (Grand Opening) <span class="flow-time">ອາທິດທີ 10</span></div>
+              <div class="flow-desc">ຈັດງານເປີດຮ້ານ, ການໂຄສະນາ ແລະ ເລີ່ມການບໍລິຫານຮ້ານຢ່າງເຕັມຮູບແບບ.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <!-- /view-franchise -->
+
+    <footer>
+      <span>La Dolce AI Site Evaluation Dashboard</span>
+      <span>© 2026 La Dolce Franchise. All rights reserved.</span>
+      <span>Version 1.1.0</span>
+    </footer>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  function switchView(name, el){
+    document.querySelectorAll('.view').forEach(v=> v.classList.remove('active'));
+    const target = document.getElementById('view-' + name);
+    if(target) target.classList.add('active');
+    document.querySelectorAll('.nav a').forEach(a=> a.classList.remove('active'));
+    if(el) el.classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+    return false;
+  }
+
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.classList.remove('show'), 2400);
+  }
+
+  function extractCoords(url){
+    const m = url.match(/(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
+    return m ? {lat:parseFloat(m[1]), lng:parseFloat(m[2])} : null;
+  }
+
+  // ---------- Google Maps ----------
+  let map, marker, radiusCircles = [], nearbyMarkers = [], geocoder;
+
+  function showMapError(msg){
+    const box = document.getElementById('googleMap');
+    if(box) box.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7;">⚠️ ${msg}</div>`;
+    document.getElementById('cafeCountLegend').innerHTML = `<i class="legend-dot" style="background:#F0A0A6;"></i>ແຜນທີ່ບໍ່ພ້ອມໃຊ້ງານ`;
+  }
+
+  // Fires automatically if the Maps key is invalid, restricted, unbilled, or missing an enabled API.
+  window.gm_authFailure = function(){
+    showMapError('Google Maps ໂຫຼດບໍ່ໄດ້ — ກວດສອບວ່າ: 1) ເປີດໃຊ້ "Maps JavaScript API" ແລະ "Places API" ໃນ Google Cloud Console ແລ້ວ, 2) ເປີດ Billing ຂອງໂປຣເຈັກແລ້ວ, 3) key ບໍ່ຖືກຈຳກັດ referrer ຫຼາຍເກີນໄປ (ຕ້ອງອະນຸຍາດໂດເມນທີ່ໃຊ້ຢູ່ນີ້).');
+    showToast('Google Maps auth ຜິດພາດ — ກວດສອບ API key');
+  };
+
+  function initMap(){
+    try{
+      geocoder = new google.maps.Geocoder();
+      const start = extractCoords(document.getElementById('mapUrl').value) || {lat:17.975687, lng:102.633077};
+
+      map = new google.maps.Map(document.getElementById('googleMap'), {
+        center: start,
+        zoom: 16,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      });
+
+      marker = new google.maps.Marker({
+        position: start,
+        map: map,
+        draggable: true,
+        title: 'ທຳເລຮ້ານ'
+      });
+
+      drawRadiusRings(start);
+      updateCoordTag(start.lat, start.lng);
+      searchNearbyCafes(start);
+
+      marker.addListener('dragend', ()=>{
+        const pos = marker.getPosition();
+        const latLng = {lat: pos.lat(), lng: pos.lng()};
+        updateCoordTag(latLng.lat, latLng.lng);
+        drawRadiusRings(latLng);
+        searchNearbyCafes(latLng);
+        showToast('ຍ້າຍໝຸດແລ້ວ — ອັບເດດຂໍ້ມູນອ້ອມຂ້າງ');
+      });
+    }catch(err){
+      console.error('initMap failed:', err);
+      showMapError('ເກີດຂໍ້ຜິດພາດຕອນສ້າງແຜນທີ່: ' + err.message);
+    }
+  }
+
+  function drawRadiusRings(center){
+    radiusCircles.forEach(c=> c.setMap(null));
+    radiusCircles = [];
+    [ {r:500, o:0.05}, {r:300, o:0.07}, {r:150, o:0.09} ].forEach(cfg=>{
+      radiusCircles.push(new google.maps.Circle({
+        strokeColor:'#2455CE', strokeOpacity:0.45, strokeWeight:1.4,
+        fillColor:'#2455CE', fillOpacity:cfg.o,
+        map:map, center:center, radius:cfg.r
+      }));
+    });
+  }
+
+  function updateCoordTag(lat, lng){
+    document.getElementById('coordTag').textContent = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    document.getElementById('mapUrl').value = `https://maps.google.com/?q=${lat.toFixed(6)},${lng.toFixed(6)}`;
+  }
+
+  function searchNearbyCafes(center){
+    if(!google.maps.places){
+      document.getElementById('cafeCountLegend').innerHTML = `<i class="legend-dot" style="background:#F0A0A6;"></i>Places API ບໍ່ພ້ອມ`;
+      return;
+    }
+    nearbyMarkers.forEach(m=> m.setMap(null));
+    nearbyMarkers = [];
+    const service = new google.maps.places.PlacesService(map);
+    service.nearbySearch({ location:center, radius:500, keyword:'cafe coffee shop' }, (results, status)=>{
+      if(status === google.maps.places.PlacesServiceStatus.OK && results){
+        results.forEach(place=>{
+          if(!place.geometry || !place.geometry.location) return;
+          const m = new google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            title: place.name,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor:'#F0C97A', fillOpacity:1,
+              strokeColor:'#fff', strokeWeight:2
+            }
+          });
+          nearbyMarkers.push(m);
+        });
+        document.getElementById('cafeCountStat').textContent = results.length + ' ຮ້ານ';
+        document.getElementById('cafeCountLegend').innerHTML = `<i class="legend-dot" style="background:#8FD6AC;"></i>ພົບ ${results.length} ຮ້ານ ໃນລັດສະໝີ 500ມ.`;
+      } else if(status === 'REQUEST_DENIED'){
+        document.getElementById('cafeCountStat').textContent = '— ຮ້ານ';
+        document.getElementById('cafeCountLegend').innerHTML = `<i class="legend-dot" style="background:#F0A0A6;"></i>Places API ຖືກປະຕິເສດ (ເປີດໃຊ້ Places API ໃນ Cloud Console)`;
+      } else {
+        document.getElementById('cafeCountStat').textContent = '0 ຮ້ານ';
+        document.getElementById('cafeCountLegend').innerHTML = `<i class="legend-dot" style="background:#8FD6AC;"></i>ບໍ່ພົບຂໍ້ມູນ`;
+      }
+    });
+  }
+
+  function locateFromInput(){
+    const val = document.getElementById('mapUrl').value.trim();
+    const c = extractCoords(val);
+    if(c){
+      recenterMap(c);
+      showToast('ດຶງພິກັດສຳເລັດ: ' + c.lat + ', ' + c.lng);
+      return;
+    }
+    if(!val){ showToast('ກະລຸນາປ້ອນລິ້ງ ຫຼື ທີ່ຢູ່'); return; }
+    if(!geocoder){ showToast('ແຜນທີ່ຍັງບໍ່ພ້ອມ, ລອງໃໝ່ອີກຄັ້ງ'); return; }
+    geocoder.geocode({ address: val }, (results, status)=>{
+      if(status === 'OK' && results[0]){
+        const loc = results[0].geometry.location;
+        recenterMap({lat:loc.lat(), lng:loc.lng()});
+        showToast('ຄົ້ນຫາທີ່ຢູ່ສຳເລັດ');
+      } else {
+        showToast('ບໍ່ພົບທີ່ຢູ່ນີ້ — ລອງໃສ່ລິ້ງ Google Maps ແທນ');
+      }
+    });
+  }
+
+  function recenterMap(latLng){
+    if(!map) return;
+    map.setCenter(latLng);
+    marker.setPosition(latLng);
+    updateCoordTag(latLng.lat, latLng.lng);
+    drawRadiusRings(latLng);
+    searchNearbyCafes(latLng);
+  }
+
+  function openInGoogleMaps(){
+    const pos = marker ? marker.getPosition() : null;
+    if(pos){ window.open(`https://www.google.com/maps?q=${pos.lat()},${pos.lng()}`, '_blank'); }
+    else { showToast('ແຜນທີ່ຍັງບໍ່ພ້ອມ'); }
+  }
+
+  function animateCount(el, target, duration){
+    let start = null;
+    function step(ts){
+      if(!start) start = ts;
+      const progress = Math.min((ts-start)/duration, 1);
+      el.textContent = Math.round(progress * target);
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- Gemini AI analysis (via secure server-side proxy) ----------
+  // The Gemini key now lives only in /api/analyze.js on the server — never sent to the browser.
+  async function callGeminiAPI(ctx){
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(ctx)
+    });
+    const data = await res.json().catch(()=> ({}));
+    if(!res.ok){
+      const detail = data?.details?.error?.message || data?.error || res.statusText;
+      throw new Error(detail);
+    }
+    return data;
+  }
+
+  const KPI_META = {
+    customer:    {max:20, weight:20},
+    access:      {max:15, weight:15},
+    competition: {max:10, weight:10},
+    parking:     {max:10, weight:10},
+    facilities:  {max:10, weight:10},
+    rental:      {max:10, weight:10},
+    growth:      {max:15, weight:15},
+    safety:      {max:10, weight:10},
+  };
+
+  function statusPillFor(status){
+    switch(status){
+      case 'excellent': return {label:'⭐ ດີເລີດ', bg:'#E4F7EC', fg:'#17A45B'};
+      case 'recommended': return {label:'✅ ຜ່ານເກນ', bg:'#E4F7EC', fg:'#17A45B'};
+      case 'review': return {label:'⚠ ຄວນທົບທວນ', bg:'#FCF0DC', fg:'#D9860A'};
+      default: return {label:'❌ ບໍ່ແນະນຳ', bg:'#FBE4E6', fg:'#DC3545'};
+    }
+  }
+
+  function barClassFor(score, max){
+    const pct = (score/max)*100;
+    if(pct >= 80) return 'fill-good';
+    if(pct >= 55) return 'fill-mid';
+    return 'fill-low';
+  }
+
+  function applyGeminiResult(result){
+    // KPI bars + scores
+    let sumScore = 0;
+    Object.keys(KPI_META).forEach(key=>{
+      const kpi = result.kpi?.[key];
+      const max = KPI_META[key].max;
+      const score = kpi ? Math.max(0, Math.min(max, Math.round(kpi.score))) : 0;
+      sumScore += score;
+      const scoreEl = document.getElementById('kpiScore-' + key);
+      const barEl = document.getElementById('kpiBar-' + key);
+      if(scoreEl) scoreEl.textContent = `${score}/${max}`;
+      if(barEl){
+        barEl.className = 'bar-fill ' + barClassFor(score, max);
+        barEl.dataset.w = Math.round((score/max)*100);
+        barEl.style.width = barEl.dataset.w + '%';
+        barEl.title = kpi?.comment || '';
+      }
+    });
+
+    const overall = typeof result.overallScore === 'number' ? Math.round(result.overallScore) : sumScore;
+    document.getElementById('kpiTotal').textContent = `${overall}/100`;
+
+    // Gauge
+    const circle = document.getElementById('gaugeCircle');
+    const circumference = 402;
+    const offset = circumference - (Math.max(0, Math.min(100, overall))/100) * circumference;
+    circle.style.strokeDashoffset = offset;
+    animateCount(document.getElementById('scoreBig'), overall, 1200);
+
+    // Status pill
+    const pillInfo = statusPillFor(result.status);
+    const pill = document.getElementById('statusPill');
+    pill.textContent = pillInfo.label;
+    pill.style.background = pillInfo.bg;
+    pill.style.color = pillInfo.fg;
+
+    // Summary + tags
+    if(result.summary) document.getElementById('summaryText').textContent = result.summary;
+    const chipRow = document.querySelector('.g-summary .chip-row');
+    if(chipRow && Array.isArray(result.tags) && result.tags.length){
+      chipRow.innerHTML = result.tags.map(t=>`<span class="chip">${t}</span>`).join('');
+    }
+
+    // Recommendations
+    const recList = document.getElementById('recList');
+    if(recList && Array.isArray(result.recommendations) && result.recommendations.length){
+      recList.innerHTML = result.recommendations.map(r=>
+        `<li><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span> ${r}</li>`
+      ).join('');
+    }
+
+    // Notes
+    const noteList = document.getElementById('noteList');
+    if(noteList && Array.isArray(result.notes) && result.notes.length){
+      noteList.innerHTML = result.notes.map(n=> `<li>${n}</li>`).join('');
+    }
+  }
+
+  async function runAnalysis(){
+    const btn = document.getElementById('analyzeBtn');
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    const pill = document.getElementById('statusPill');
+    const circle = document.getElementById('gaugeCircle');
+    const bars = document.querySelectorAll('.bar-fill');
+
+    btn.disabled = true;
+    btn.innerHTML = '⏳ ກຳລັງວິເຄາະ...';
+    dot.classList.remove('live');
+    txt.textContent = 'AI ກຳລັງປະມວນຜົນຂໍ້ມູນທຳເລ...';
+    pill.textContent = '⏳ ກຳລັງວິເຄາະ';
+    pill.style.background = '#FCF0DC';
+    pill.style.color = '#D9860A';
+    circle.style.strokeDashoffset = 402;
+    bars.forEach(b=> b.style.width = '0%');
+
+    const pos = marker ? marker.getPosition() : extractCoords(document.getElementById('mapUrl').value);
+    const ctx = {
+      lat: pos ? (pos.lat ? pos.lat() : pos.lat) : 17.975687,
+      lng: pos ? (pos.lng ? pos.lng() : pos.lng) : 102.633077,
+      mapUrl: document.getElementById('mapUrl').value,
+      cafeCount: document.getElementById('cafeCountStat').textContent
+    };
+
+    try{
+      const result = await callGeminiAPI(ctx);
+      applyGeminiResult(result);
+      dot.classList.add('live');
+      txt.textContent = 'ວິເຄາະສຳເລັດດ້ວຍ Gemini AI — ອັບເດດລ່າສຸດເມື່ອຄູ່ນີ້';
+      showToast('ການວິເຄາະດ້ວຍ AI ສຳເລັດແລ້ວ ✔');
+    }catch(err){
+      console.error(err);
+      dot.classList.remove('live');
+      txt.textContent = 'ການວິເຄາະລົ້ມເຫລວ — ກວດສອບ API key / ການເຊື່ອມຕໍ່';
+      pill.textContent = '⚠ ຜິດພາດ';
+      pill.style.background = '#FBE4E6';
+      pill.style.color = '#DC3545';
+      showToast('Gemini API ຜິດພາດ: ' + err.message);
+    }finally{
+      btn.disabled = false;
+      btn.innerHTML = '✨ ວິເຄາະດ້ວຍ AI';
+    }
+  }
+
+  function formatKip(n){
+    return Math.round(n).toLocaleString('en-US') + ' ກີບ';
+  }
+
+  function calcTotal(){
+    const area = parseFloat(document.getElementById('calcArea').value) || 0;
+    const areaRate = parseFloat(document.getElementById('calcAreaRate').value) || 0;
+    const branding = parseFloat(document.getElementById('calcBranding').value) || 0;
+    const recipe = parseFloat(document.getElementById('calcRecipe').value) || 0;
+    const system = parseFloat(document.getElementById('calcSystem').value) || 0;
+    const training = parseFloat(document.getElementById('calcTraining').value) || 0;
+    const fee = parseFloat(document.getElementById('calcFee').value) || 0;
+
+    const design = area * areaRate;
+    const grand = design + branding + recipe + system + training + fee;
+
+    document.getElementById('lineDesign').textContent = formatKip(design);
+    document.getElementById('lineBranding').textContent = formatKip(branding);
+    document.getElementById('lineRecipe').textContent = formatKip(recipe);
+    document.getElementById('lineSystem').textContent = formatKip(system);
+    document.getElementById('lineTraining').textContent = formatKip(training);
+    document.getElementById('lineFee').textContent = formatKip(fee);
+    document.getElementById('calcGrandTotal').textContent = formatKip(grand);
+  }
+
+  function exportWorkflowPDF(){
+    document.body.classList.add('print-workflow-only');
+    window.print();
+  }
+  window.onafterprint = function(){
+    document.body.classList.remove('print-workflow-only');
+  };
+
+  // ---------- Firebase save actions ----------
+  async function saveEvaluation(){
+    if(!window.saveEvaluationToFirebase){ showToast('Firebase ຍັງບໍ່ພ້ອມ, ລອງໃໝ່ອີກຄັ້ງ'); return; }
+    showToast('ກຳລັງບັນທຶກ...');
+    const pos = marker ? marker.getPosition() : null;
+    const data = {
+      mapUrl: document.getElementById('mapUrl').value,
+      lat: pos ? pos.lat() : null,
+      lng: pos ? pos.lng() : null,
+      score: parseInt(document.getElementById('scoreBig').textContent, 10) || 0,
+      summary: document.getElementById('summaryText').textContent,
+      cafeCountNearby: document.getElementById('cafeCountStat').textContent
+    };
+    try{
+      await window.saveEvaluationToFirebase(data);
+      showToast('ບັນທຶກການປະເມີນແລ້ວ ✔');
+    }catch(err){
+      showToast('ບັນທຶກລົ້ມເຫລວ — ກວດສອບ Firestore Rules');
+    }
+  }
+
+  async function saveFranchiseCost(){
+    if(!window.saveFranchiseCostToFirebase){ showToast('Firebase ຍັງບໍ່ພ້ອມ, ລອງໃໝ່ອີກຄັ້ງ'); return; }
+    showToast('ກຳລັງບັນທຶກ...');
+    const data = {
+      area: parseFloat(document.getElementById('calcArea').value) || 0,
+      areaRate: parseFloat(document.getElementById('calcAreaRate').value) || 0,
+      branding: parseFloat(document.getElementById('calcBranding').value) || 0,
+      recipe: parseFloat(document.getElementById('calcRecipe').value) || 0,
+      system: parseFloat(document.getElementById('calcSystem').value) || 0,
+      training: parseFloat(document.getElementById('calcTraining').value) || 0,
+      fee: parseFloat(document.getElementById('calcFee').value) || 0,
+      total: document.getElementById('calcGrandTotal').textContent
+    };
+    try{
+      await window.saveFranchiseCostToFirebase(data);
+      showToast('ບັນທຶກຄ່າໃຊ້ຈ່າຍແລ້ວ ✔');
+    }catch(err){
+      showToast('ບັນທຶກລົ້ມເຫລວ — ກວດສອບ Firestore Rules');
+    }
+  }
+
+  window.addEventListener('load', ()=>{
+    setTimeout(runAnalysis, 2200); // wait for map + nearby-café search to resolve first
+    calcTotal();
+  });
+</script>
+
+<!-- Firebase (Firestore) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4ajOxcYLJCQ7sC0SRaWtKW0Ec0T3EO9g",
+    authDomain: "franchise-kpi.firebaseapp.com",
+    projectId: "franchise-kpi",
+    storageBucket: "franchise-kpi.firebasestorage.app",
+    messagingSenderId: "135131144520",
+    appId: "1:135131144520:web:d092c2b29f3b2cf6b5537d",
+    measurementId: "G-F44X1S1FQJ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.saveEvaluationToFirebase = async function(data){
+    const ref = await addDoc(collection(db, "evaluations"), { ...data, createdAt: serverTimestamp() });
+    return ref.id;
+  };
+
+  window.saveFranchiseCostToFirebase = async function(data){
+    const ref = await addDoc(collection(db, "franchise_costs"), { ...data, createdAt: serverTimestamp() });
+    return ref.id;
+  };
+</script>
+
+<!-- Google Maps (Maps JS API + Places + Geocoding) -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1a4eIBM-KeVKHkhBnfnZ2DFcd1QkmaWU&libraries=places&callback=initMap" async defer onerror="showMapError('ໂຫຼດ Google Maps script ບໍ່ໄດ້ — ກວດສອບອິນເຕີເນັດ ຫຼື API key ຖືກຕ້ອງ')"></script>
+
+</body>
+</html>
